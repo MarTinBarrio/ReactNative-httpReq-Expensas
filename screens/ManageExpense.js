@@ -1,14 +1,21 @@
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { GlobalStyles } from "../constants/styles";
 import IconButton from "../components/UI/IconButton";
-import Button from "../components/UI/Button";
+import { ExpensesContext } from "../store/expenses-context";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 function ManageExpense({ route, navigation }) {
+  const expsesCtx = useContext(ExpensesContext);
+
   //const editExpenseId = route.params.expenseId;
   const editExpenseId = route.params?.expenseId; //compruebo q sea un obj antes de intentar asignar
   const isEditing = !!editExpenseId; //convierte editExpenseId en boolean
+
+  const selectedExpense = expsesCtx.expenses.find(
+    (expense) => expense.id === editExpenseId
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -16,16 +23,31 @@ function ManageExpense({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {}
-  function cancelHandler() {}
-  function confirmHandler() {}
+  function deleteExpenseHandler() {
+    expsesCtx.deleteExpense(editExpenseId);
+    navigation.goBack();
+  }
+  function cancelHandler() {
+    navigation.goBack();
+  }
+  function confirmHandler(expenseData) {
+    if (isEditing) {
+      expsesCtx.updateExpense(editExpenseId, expenseData);
+    } else {
+      expsesCtx.addExpense(expenseData);
+    }
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.container}>
-      <View>
-        <Button mode='flat' onPress={cancelHandler}>Cancel</Button>
-        <Button onPress={confirmHandler}>{isEditing ? 'Update' : 'Add'}</Button>
-      </View>
+      <ExpenseForm
+        onCancel={cancelHandler}
+        submitButtonLabel={isEditing ? "Update" : "Add"}
+        onSubmit={confirmHandler}
+        editExpense={selectedExpense}
+      />
+
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -43,16 +65,17 @@ function ManageExpense({ route, navigation }) {
 export default ManageExpense;
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
     padding: 24,
-    backgroundColor: GlobalStyles.colors.primary800
+    backgroundColor: GlobalStyles.colors.primary800,
   },
-  deleteContainer:{
+
+  deleteContainer: {
     marginTop: 16,
     paddingTop: 8,
     borderTopWidth: 2,
     borderTopColor: GlobalStyles.colors.primary200,
-    alignItems: 'center'
-  }
-})
+    alignItems: "center",
+  },
+});
