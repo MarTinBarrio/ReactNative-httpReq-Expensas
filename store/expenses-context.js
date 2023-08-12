@@ -3,66 +3,22 @@ import { createContext, useReducer } from "react";
 export const ExpensesContext = createContext({
   expenses: [],
   addExpense: ({ description, amount, date }) => {},
+  setExpenses: (expenses) => {},
   deleteExpense: (id) => {},
   updateExpense: (id, { description, amount, date }) => {},
 });
 
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    description: "A pair of shoes",
-    amount: 59.99,
-    date: new Date("2023-08-05"),
-  },
-  {
-    id: "e2",
-    description: "A pair of trousers",
-    amount: 89.29,
-    date: new Date("2023-05-08"),
-  },
-  {
-    id: "e3",
-    description: "Some bananas",
-    amount: 5.99,
-    date: new Date("2023-05-10"),
-  },
-  {
-    id: "e4",
-    description: "A book",
-    amount: 15.35,
-    date: new Date("2023-08-01"),
-  },
-  {
-    id: "e5",
-    description: "Another book",
-    amount: 18.0,
-    date: new Date("2023-08-03"),
-  },
-  {
-    id: "e6",
-    description: "A pair of trousers",
-    amount: 89.29,
-    date: new Date("2023-05-08"),
-  },
-  {
-    id: "e7",
-    description: "Some bananas",
-    amount: 5.99,
-    date: new Date("2023-05-10"),
-  },
-  {
-    id: "e8",
-    description: "A book",
-    amount: 15.35,
-    date: new Date("2023-08-01"),
-  },
-];
 
 function expensesReducer(state, action) {
   switch (action.type) {
     case "ADD":
-      const id = new Date().toString() + Math.random().toString();
-      return [{ ...action.data, id: id }, ...state];
+      //const id = new Date().toString() + Math.random().toString();
+      //return [{ ...action.data, id: id }, ...state];
+      return [ ...action.data, ...state];
+
+    case "SET":
+      const inverted = action.data.reverse();
+      return inverted;
 
     case "UPDATE":
       const updatableExpenseIndex = state.findIndex(
@@ -81,10 +37,14 @@ function expensesReducer(state, action) {
 }
 
 function ExpensesContextProvider({ children }) {
-  const [expensesState, dispach] = useReducer(expensesReducer, DUMMY_EXPENSES);
+  const [expensesState, dispach] = useReducer(expensesReducer, []);
 
   function addExpense(expenseData) {
     dispach({ type: "ADD", data: expenseData });
+  }
+
+  function setExpenses (expenses) {
+    dispach({ type: "SET", data: expenses})
   }
 
   function deleteExpense(id) {
@@ -98,6 +58,7 @@ function ExpensesContextProvider({ children }) {
   const value = {
     expenses: expensesState,
     addExpense: addExpense,
+    setExpenses: setExpenses,
     deleteExpense: deleteExpense,
     updateExpense: updateExpense,
   };
