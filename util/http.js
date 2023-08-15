@@ -4,7 +4,11 @@ import axios from 'axios';
 //lo q m permite una base de datos en la nube en la cual puedo 
 //almacenar y consultar datos.
 
-const BACKEND_URL = 'https://react-native-app-expensas-default-rtdb.firebaseio.com'
+//backend - https://firebase.google.com/
+//proyecto - https://console.firebase.google.com/project/react-native-app-expensas/database/react-native-app-expensas-default-rtdb/data?hl=es-419&pli=1
+
+
+const BACKEND_URL = 'https://react-native-app-expensas-default-rtdb.firebaseiocom'
 //BACKEND_URL m lo dá la misma página de fireBase a la cual le agrego lo q
 //quiero agrear / modificar con .json...
 
@@ -36,7 +40,10 @@ export async function fetchExpense(){
   return expenses;
 }
 
-export async function updateExpense(id, expenseData){
-  axios.put(BACKEND_URL + `/expenses/${id}.json`)
+export function updateExpense(id, expenseData){
+  return axios.put(BACKEND_URL + `/expenses/${id}.json`, expenseData);
 }
-export async function deleteExpense(){}
+
+export async function deleteExpense(id){
+  return axios.delete(BACKEND_URL + `/expenses/${id}.json`);
+}
