@@ -5,10 +5,10 @@ import axios from 'axios';
 //almacenar y consultar datos.
 
 //backend - https://firebase.google.com/
-//proyecto - https://console.firebase.google.com/project/react-native-app-expensas/database/react-native-app-expensas-default-rtdb/data?hl=es-419&pli=1
+//proyecto - https://console.firebase.google.com/project/
 
 
-const BACKEND_URL = 'https://react-native-app-expensas-default-rtdb.firebaseiocom'
+const BACKEND_URL = ''
 //BACKEND_URL m lo dá la misma página de fireBase a la cual le agrego lo q
 //quiero agrear / modificar con .json...
 
